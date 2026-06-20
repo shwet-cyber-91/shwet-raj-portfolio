@@ -4,7 +4,7 @@ Personal portfolio site for Shwet Raj, Frontend Developer.
 
 ## Live
 
-_Add your Vercel URL here after deploying_
+https://shwet-raj-portfolio.vercel.app
 
 ## Tech
 
