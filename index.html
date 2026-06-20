@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shwet Raj — Frontend Developer</title>
+<meta name="description" content="Shwet Raj — Frontend Developer. Portfolio and projects.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ===================================================
+     BASIC RESET
+     (har element ka default margin/padding hata rahe hain
+     taaki sab browsers mein same dikhe)
+  =================================================== */
+  *{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html{
+    scroll-behavior: smooth;
+  }
+
+  body{
+    background: #0b0e1a;       /* dark navy background */
+    color: #f2f1f8;            /* off-white text */
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  a{
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img, svg{
+    display: block;
+    max-width: 100%;
+  }
+
+  ::selection{
+    background: #7c5cff;
+    color: #fff;
+  }
+
+  /* keyboard se tab karne par focus clearly dikhega */
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid #4fd8e0;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ===================================================
+     SCROLL PROGRESS BAR (top of page, naya addition)
+  =================================================== */
+  .scroll-progress{
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, #7c5cff, #4fd8e0);
+    z-index: 999;
+    transition: width 0.1s ease-out;
+  }
+
+  /* ===================================================
+     BACK TO TOP BUTTON (naya addition)
+  =================================================== */
+  .back-to-top{
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c5cff, #6b4fe0);
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px -6px rgba(124,92,255,0.7);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    z-index: 998;
+  }
+  .back-to-top.show{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  .back-to-top:hover{
+    transform: translateY(-3px);
+  }
+
+  /* ===================================================
+     SCROLL REVEAL (sections fade-in karte hain jab
+     user scroll karke unke paas aata hai)
+  =================================================== */
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in-view{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===================================================
+     NAVBAR
+  =================================================== */
+  header.nav{
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    background: rgba(11,14,26,0.7);
+    border-bottom: 1px solid rgba(124,92,255,0.18);
+  }
+  .nav-inner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .logo{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo-mark{
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #7c5cff, #4fd8e0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #0b0e1a;
+  }
+  nav.links{
+    display: flex;
+    gap: 28px;
+    font-size: 14px;
+    color: #8a8fa3;
+  }
+  nav.links a{
+    transition: color 0.2s ease;
+  }
+  nav.links a:hover{
+    color: #f2f1f8;
+  }
+
+  /* ===================================================
+     HERO SECTION
+  =================================================== */
+  .hero{
+    position: relative;
+    padding: 120px 24px 100px;
+    overflow: hidden;
+  }
+  .orb{
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 16s ease-in-out infinite;
+  }
+  .orb-1{
+    width: 380px; height: 380px;
+    background: #7c5cff;
+    top: -120px; left: -100px;
+  }
+  .orb-2{
+    width: 300px; height: 300px;
+    background: #4fd8e0;
+    top: 60px; right: -80px;
+    animation-delay: -6s;
+  }
+  @keyframes drift{
+    0%, 100%{ transform: translate(0,0); }
+    50%{ transform: translate(30px, -30px); }
+  }
+  .hero-content{
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+  }
+  .eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: #4fd8e0;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before{
+    content: '';
+    width: 24px; height: 1px;
+    background: #4fd8e0;
+  }
+  h1.title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: clamp(40px, 7vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  h1.title .grad{
+    background: linear-gradient(135deg, #7c5cff, #4fd8e0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-sub{
+    font-size: 18px;
+    color: #8a8fa3;
+    max-width: 540px;
+    margin-bottom: 36px;
+  }
+  .btn-row{
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  /* available badge — naya addition, hero buttons ke neeche */
+  .available-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 28px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(79,216,224,0.08);
+    border: 1px solid rgba(79,216,224,0.25);
+    font-size: 13px;
+    color: #4fd8e0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .available-badge .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #4fd8e0;
+    box-shadow: 0 0 0 0 rgba(79,216,224,0.6);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(79,216,224,0.6); }
+    70%{ box-shadow: 0 0 0 8px rgba(79,216,224,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(79,216,224,0); }
+  }
+
+  /* buttons used everywhere */
+  .btn{
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px 26px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary{
+    background: linear-gradient(135deg, #7c5cff, #6b4fe0);
+    color: #fff;
+    box-shadow: 0 8px 30px -8px rgba(124,92,255,0.6);
+  }
+  .btn-primary:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px -8px rgba(124,92,255,0.8);
+  }
+  .btn-ghost{
+    background: rgba(22,26,46,0.6);
+    color: #f2f1f8;
+    border-color: rgba(124,92,255,0.18);
+  }
+  .btn-ghost:hover{
+    transform: translateY(-2px);
+    border-color: #7c5cff;
+  }
+
+  /* ===================================================
+     SECTION — shared spacing for About / Skills / Project / Contact
+  =================================================== */
+  section{
+    padding: 80px 24px;
+  }
+  .section-head{
+    margin-bottom: 48px;
+  }
+  .section-head .eyebrow{
+    margin-bottom: 10px;
+  }
+  h2.section-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 38px);
+  }
+
+  /* ===================================================
+     ABOUT
+  =================================================== */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .about-text{
+    color: #8a8fa3;
+    font-size: 16px;
+    max-width: 680px;
+  }
+  .about-text strong{
+    color: #f2f1f8;
+    font-weight: 600;
+  }
+
+  /* ===================================================
+     SKILLS
+  =================================================== */
+  .pills{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .pill{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(22,26,46,0.6);
+    border: 1px solid rgba(124,92,255,0.18);
+    color: #f2f1f8;
+    transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  }
+  .pill:hover{
+    border-color: #7c5cff;
+    transform: translateY(-2px);
+    background: rgba(124,92,255,0.1);
+  }
+
+  /* ===================================================
+     SKILL PILL COLORS — har skill ka apna color
+     (order: HTML5, CSS3, JavaScript, React, Responsive
+     Design, Git & GitHub, REST APIs, Vercel)
+  =================================================== */
+  .pill:nth-child(1){ background: rgba(255,107,74,0.12); border-color: rgba(255,107,74,0.4); color: #ff6b4a; }
+  .pill:nth-child(1):hover{ background: rgba(255,107,74,0.22); box-shadow: 0 8px 20px -6px rgba(255,107,74,0.5); }
+
+  .pill:nth-child(2){ background: rgba(74,158,255,0.12); border-color: rgba(74,158,255,0.4); color: #4a9eff; }
+  .pill:nth-child(2):hover{ background: rgba(74,158,255,0.22); box-shadow: 0 8px 20px -6px rgba(74,158,255,0.5); }
+
+  .pill:nth-child(3){ background: rgba(240,219,79,0.12); border-color: rgba(240,219,79,0.4); color: #f0db4f; }
+  .pill:nth-child(3):hover{ background: rgba(240,219,79,0.22); box-shadow: 0 8px 20px -6px rgba(240,219,79,0.5); }
+
+  .pill:nth-child(4){ background: rgba(97,218,251,0.12); border-color: rgba(97,218,251,0.4); color: #61dafb; }
+  .pill:nth-child(4):hover{ background: rgba(97,218,251,0.22); box-shadow: 0 8px 20px -6px rgba(97,218,251,0.5); }
+
+  .pill:nth-child(5){ background: rgba(167,139,250,0.12); border-color: rgba(167,139,250,0.4); color: #a78bfa; }
+  .pill:nth-child(5):hover{ background: rgba(167,139,250,0.22); box-shadow: 0 8px 20px -6px rgba(167,139,250,0.5); }
+
+  .pill:nth-child(6){ background: rgba(255,111,174,0.12); border-color: rgba(255,111,174,0.4); color: #ff6fae; }
+  .pill:nth-child(6):hover{ background: rgba(255,111,174,0.22); box-shadow: 0 8px 20px -6px rgba(255,111,174,0.5); }
+
+  .pill:nth-child(7){ background: rgba(74,222,128,0.12); border-color: rgba(74,222,128,0.4); color: #4ade80; }
+  .pill:nth-child(7):hover{ background: rgba(74,222,128,0.22); box-shadow: 0 8px 20px -6px rgba(74,222,128,0.5); }
+
+  .pill:nth-child(8){ background: rgba(229,229,229,0.12); border-color: rgba(229,229,229,0.4); color: #e5e5e5; }
+  .pill:nth-child(8):hover{ background: rgba(229,229,229,0.22); box-shadow: 0 8px 20px -6px rgba(229,229,229,0.5); }
+
+  /* ===================================================
+     PROJECT — signature 3D tilt card
+  =================================================== */
+  .project-card{
+    position: relative;
+    perspective: 1000px;
+  }
+  .project-card .tilt-inner{
+    transform-style: preserve-3d;
+    transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
+    background: linear-gradient(160deg, #161a2e, #11152a);
+    border: 1px solid rgba(124,92,255,0.18);
+    border-radius: 24px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 40px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card .tilt-inner::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(124,92,255,0.18), transparent 60%);
+    pointer-events: none;
+  }
+  .project-eyebrow{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #4fd8e0;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* live badge — naya addition, project eyebrow ke saath */
+  .live-badge{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(79,216,224,0.1);
+    border: 1px solid rgba(79,216,224,0.3);
+    color: #4fd8e0;
+    text-transform: none;
+  }
+  .live-badge .dot{
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #4fd8e0;
+  }
+
+  .project-title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 14px;
+  }
+  .project-desc{
+    color: #8a8fa3;
+    font-size: 15px;
+    margin-bottom: 20px;
+    max-width: 420px;
+  }
+  .tech-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 26px;
+  }
+  .tech-chip{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    background: rgba(79,216,224,0.1);
+    color: #4fd8e0;
+    border: 1px solid rgba(79,216,224,0.2);
+  }
+  .project-links{
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .project-links .btn{
+    padding: 11px 20px;
+    font-size: 13px;
+  }
+
+  .qr-mock{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateZ(40px);
+  }
+  .qr-mock-frame{
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6);
+  }
+  #qrThumb{
+    width: 160px;
+    height: 160px;
+  }
+
+  /* ===================================================
+     CONTACT
+  =================================================== */
+  .contact-card{
+    background: rgba(22,26,46,0.6);
+    border: 1px solid rgba(124,92,255,0.18);
+    border-radius: 24px;
+    padding: 48px;
+    text-align: center;
+  }
+  .contact-card h2{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(24px, 4vw, 32px);
+    margin-bottom: 14px;
+  }
+  .contact-card p{
+    color: #8a8fa3;
+    margin-bottom: 28px;
+  }
+
+  /* social row — naya addition, email button ke neeche */
+  .social-row{
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 24px;
+  }
+  .social-link{
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(22,26,46,0.6);
+    border: 1px solid rgba(124,92,255,0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  }
+  .social-link:hover{
+    transform: translateY(-3px);
+    border-color: #7c5cff;
+    background: rgba(124,92,255,0.1);
+  }
+
+  /* ===================================================
+     FOOTER
+  =================================================== */
+  footer{
+    padding: 32px 24px;
+    text-align: center;
+    color: #8a8fa3;
+    font-size: 13px;
+    border-top: 1px solid rgba(124,92,255,0.18);
+  }
+
+  /* ===================================================
+     RESPONSIVE — phone/tablet screens
+  =================================================== */
+  @media (max-width: 760px){
+    .project-card .tilt-inner{
+      grid-template-columns: 1fr;
+      padding: 28px;
+    }
+    .qr-mock{
+      order: -1;
+    }
+    nav.links{
+      gap: 16px;
+      font-size: 13px;
+    }
+    .back-to-top{
+      bottom: 18px;
+      right: 18px;
+    }
+  }
+
+  /* jin logo ko motion se chakkar/ulti aati hai unke liye animations band */
+  @media (prefers-reduced-motion: reduce){
+    *{
+      animation: none !important;
+      transition: none !important;
+    }
+    html{
+      scroll-behavior: auto;
+    }
+    .reveal{
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo"><span class="logo-mark">SR</span> Shwet Raj</div>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#project">Project</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="hero-content">
+    <div class="eyebrow">Frontend Developer</div>
+    <h1 class="title">Hi, I'm <span class="grad">Shwet Raj.</span><br>I build clean, fast things for the web.</h1>
+    <p class="hero-sub">Computer Science student who likes turning small annoyances into simple, working tools — and shipping them, not just sketching them.</p>
+    <div class="btn-row">
+      <a href="#project" class="btn btn-primary">View my project →</a>
+      <a href="#contact" class="btn btn-ghost">Get in touch</a>
+    </div>
+    <div class="available-badge"><span class="dot"></span>Available for internships</div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">About</div>
+      <h2 class="section-title">A bit about me</h2>
+    </div>
+    <div class="about-grid">
+      <p class="about-text">
+        I'm a Computer Science student focused on frontend development — <strong>HTML, CSS, JavaScript, and React</strong>.
+        I enjoy building small, genuinely useful tools that solve a real problem cleanly, and I'm comfortable taking a project
+        from a blank file to a live, deployed product. <em>(Edit this paragraph with your own background, college, and interests.)</em>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Skills</div>
+      <h2 class="section-title">What I work with</h2>
+    </div>
+    <div class="pills">
+      <span class="pill">HTML5</span>
+      <span class="pill">CSS3</span>
+      <span class="pill">JavaScript</span>
+      <span class="pill">React</span>
+      <span class="pill">Responsive Design</span>
+      <span class="pill">Git &amp; GitHub</span>
+      <span class="pill">REST APIs</span>
+      <span class="pill">Vercel</span>
+    </div>
+  </div>
+</section>
+
+<section id="project">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Featured Project</div>
+      <h2 class="section-title">Something I built end-to-end</h2>
+    </div>
+    <div class="project-card">
+      <div class="tilt-inner" id="tiltCard">
+        <div class="project-body">
+          <div class="project-eyebrow">Web App <span class="live-badge"><span class="dot"></span>Live</span></div>
+          <div class="project-title">QuickQR — Free QR Code Generator</div>
+          <p class="project-desc">
+            A fast, no-signup QR code generator. Type a link or text, get a downloadable QR code instantly —
+            no ads, no account, no watermark. Built this because most "free" QR tools online bury the download
+            button behind a signup wall.
+          </p>
+          <div class="tech-row">
+            <span class="tech-chip">HTML5</span>
+            <span class="tech-chip">CSS3</span>
+            <span class="tech-chip">JavaScript</span>
+            <span class="tech-chip">QRCode.js</span>
+          </div>
+          <div class="project-links">
+            <a href="https://shwet-raj-quickqr.vercel.app" class="btn btn-primary" id="liveLink">Live Demo ↗</a>
+            <a href="https://github.com/shwet-cyber-91/shwet-raj-quickqr" class="btn btn-ghost" id="repoLink">View Code ↗</a>
+          </div>
+        </div>
+        <div class="qr-mock">
+          <div class="qr-mock-frame">
+            <svg id="qrThumb" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="contact-card">
+      <h2>Let's work together</h2>
+      <p>Open to internships and frontend developer roles.</p>
+      <a class="btn btn-primary" href="mailto:shwetraj248@gmail.com">shwetraj248@gmail.com</a>
+      <div class="social-row">
+        <a href="https://github.com/shwet-cyber-91" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub">🐙</a>
+        <a href="https://www.linkedin.com/in/shwet-raj-5a9b312ba?utm_source=share_via&amp;utm_content=profile&amp;utm_medium=member_android" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Designed &amp; built by Shwet Raj.
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">↑</button>
+
+<script>
+  // Scroll progress bar — page jitni scroll hui hai utna bar fill hota hai
+  (function(){
+    var bar = document.getElementById('scrollProgress');
+    if(!bar) return;
+    window.addEventListener('scroll', function(){
+      var scrollTop = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      var percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      bar.style.width = percent + '%';
+    });
+  })();
+
+  // Back to top button — 400px scroll ke baad dikhta hai
+  (function(){
+    var btn = document.getElementById('backToTop');
+    if(!btn) return;
+    window.addEventListener('scroll', function(){
+      if(window.scrollY > 400){
+        btn.classList.add('show');
+      }else{
+        btn.classList.remove('show');
+      }
+    });
+    btn.addEventListener('click', function(){
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  })();
+
+  // Scroll reveal — har section dheere se fade-in hota hai jab scroll mein aata hai
+  (function(){
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var targets = document.querySelectorAll('section, .pill, .tech-chip');
+    targets.forEach(function(el){ el.classList.add('reveal'); });
+
+    if(reduceMotion || !('IntersectionObserver' in window)){
+      targets.forEach(function(el){ el.classList.add('in-view'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    targets.forEach(function(el){ observer.observe(el); });
+  })();
+
+  // 3D tilt effect for the featured project card
+  (function(){
+    var card = document.querySelector('.project-card');
+    var inner = document.getElementById('tiltCard');
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(card && inner && !reduceMotion){
+      card.addEventListener('mousemove', function(e){
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        var rx = (0.5 - y) * 10;
+        var ry = (x - 0.5) * 10;
+        inner.style.transform = 'perspective(1000px) rotateX('+rx+'deg) rotateY('+ry+'deg) scale(1.015)';
+        card.style.setProperty('--mx', (x*100)+'%');
+        card.style.setProperty('--my', (y*100)+'%');
+      });
+      card.addEventListener('mouseleave', function(){
+        inner.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+      });
+    }
+  })();
+
+  // Decorative QR-style thumbnail (purely visual, not a real scannable code)
+  (function(){
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.getElementById('qrThumb');
+    if(!svg) return;
+    var bg = document.createElementNS(NS,'rect');
+    bg.setAttribute('width','21'); bg.setAttribute('height','21'); bg.setAttribute('fill','#ffffff');
+    svg.appendChild(bg);
+
+    function addRect(x,y,fill){
+      var r = document.createElementNS(NS,'rect');
+      r.setAttribute('x',x); r.setAttribute('y',y);
+      r.setAttribute('width','1'); r.setAttribute('height','1');
+      r.setAttribute('fill', fill || '#0b0e1a');
+      svg.appendChild(r);
+    }
+
+    function finder(ox,oy){
+      for(var r=0;r<7;r++){
+        for(var c=0;c<7;c++){
+          var border = (r===0||r===6||c===0||c===6);
+          var center = (r>=2&&r<=4&&c>=2&&c<=4);
+          if(border||center) addRect(ox+c, oy+r);
+        }
+      }
+    }
+    finder(0,0); finder(14,0); finder(0,14);
+
+    // scattered data modules for a plausible QR look
+    var data = [3,9,4,10,5,9,6,11,7,8,8,10,9,9,9,4,9,5,9,11,9,12,10,4,10,7,10,12,11,5,11,9,
+                11,13,12,4,12,8,12,12,13,5,13,9,13,12,14,9,14,11,15,9,15,12,16,10,17,9,17,12,
+                18,4,18,9,18,12,19,5,19,8,19,13];
+    for(var i=0;i<data.length;i+=2){ addRect(data[i], data[i+1]); }
+  })();
+</script>
+
+</body>
+</html>
